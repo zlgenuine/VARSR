@@ -1,4 +1,5 @@
 # VARSR: Visual Autogressive Modeling for Image Super Resolution
+<div align="center">
 
 [![arXiv](https://img.shields.io/badge/arXiv%20paper-2501.18993-b31b1b.svg)](https://arxiv.org/abs/2501.18993)&nbsp;
 [![huggingface weights](https://img.shields.io/badge/%F0%9F%A4%97%20Weights-qyp2000/VARSR-yellow)](https://huggingface.co/qyp2000/VARSR)&nbsp;
@@ -7,7 +8,7 @@
 Yunpeng Qu<sup>1,2</sup> | Kun Yuan<sup>2</sup> | Jinhua Hao<sup>2</sup> | Kai Zhao<sup>2</sup> | Qizhi Xie<sup>1,2</sup> | Ming Sun<sup>2</sup> | Chao Zhou<sup>2</sup>
 
 <sup>1</sup>Tsinghua University, <sup>2</sup>Kuaishou Technology.
-
+</div>
 
 ## 🚀 Overview framework
 ![VARSR](figure/framework.png)
