@@ -158,16 +158,6 @@ class VectorQuantizer2(nn.Module):
                 idx_gt = torch.argmin(d_no_grad, dim=1)
             
             scale = -40.
-            # idx_N = sample_with_top_k_top_p_(
-            #     scale*d_no_grad.unsqueeze(1),
-            #     rng=None,
-            #     top_k=200,
-            #     top_p=0.95,
-            #     num_samples=1,
-            # )[:, :, 0].squeeze(1)
-            # prob = torch.softmax(scale*d_no_grad, dim=-1)
-            # idx_N = torch.multinomial(prob, num_samples=1, replacement=True).squeeze(1)
-            # if si == SN - 1:
             idx_N = idx_gt
 
             idx_Bhw = idx_N.view(B, ph, pw)

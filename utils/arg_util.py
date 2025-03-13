@@ -69,8 +69,6 @@ class Args(Tap):
     fuse: bool = False       # whether to use fused op like flash attn, xformers, fused MLP, fused LayerNorm, etc.
     
     # data
-    #pn: str = '1_2_3_4_6_9_12_16_20_24_28_32' 
-    #pn: str = '1_2_3_4_5_7_9_12_16_20_24_28_32' 
     pn: str = '1_2_3_4_6_9_13_18_24_32'
     patch_size: int = 16
     patch_nums: tuple = None    # [automatically set; don't specify this] = tuple(map(int, args.pn.replace('-', '_').split('_')))
@@ -251,8 +249,6 @@ def init_dist_and_get_args():
     if args.pn == '256':
         args.pn = '1_2_3_4_5_6_8_10_13_16'
     elif args.pn == '512':
-        #args.pn =  '1_2_3_4_6_9_13_18_24_32'
-        #args.pn =  '1_2_3_4_5_7_9_12_16_20_24_28_32' 
         args.pn = '1_2_3_4_6_9_12_16_20_24_28_32'
     elif args.pn == '1024':
         args.pn = '1_2_3_4_5_7_9_12_16_21_27_36_48_64'

@@ -125,8 +125,6 @@ class VAR_RoPE(nn.Module):
         self.vae_proxy: Tuple[VQVAE] = (vae_local,)
         self.vae_quant_proxy: Tuple[VectorQuantizer2] = (quant,)
         self.con_embedding = ControlNetConditioningEmbedding(self.C, 3, (32, 128, 256, 512, 1536) , return_rgbs=False)
-        #self.con_embedding = ControlNetConditioningEmbedding(self.C, 3, (32, 64, 128, 256, 512) , return_rgbs=False)
-        #self.con_embedding = ControlNetConditioningEmbedding(self.C, 3, (96, 192, 384, 768, 1536) , return_rgbs=False)
         self.word_embed = nn.Linear(self.Cvae, self.C)
         
         # 2. class embedding
@@ -144,17 +142,6 @@ class VAR_RoPE(nn.Module):
         nn.init.trunc_normal_(self.pos_start.data, mean=0, std=init_std)
 
 
-        # 3. absolute position embedding
-        # pos_1LC = []
-        # pe = torch.empty(1, self.patch_nums[-1]**2, self.C)
-        # nn.init.trunc_normal_(pe, mean=0, std=init_std)
-        # pos_1LC.append(pe)
-        # for i, pn in enumerate(self.patch_nums):
-        #     pe = torch.empty(1, pn*pn, self.C)
-        #     nn.init.trunc_normal_(pe, mean=0, std=init_std)
-        #     pos_1LC.append(pe)
-        # pos_1LC = torch.cat(pos_1LC, dim=1)     # 1, L, C
-        # self.pos_1LC = nn.Parameter(pos_1LC)
         rope_patch_nums =  (self.patch_nums[-1], self.patch_nums[0], self.patch_nums[1]) +  self.patch_nums[2:]
         self.freqs_cis = precompute_freqs_cis(
             self.C // num_heads, rope_patch_nums
@@ -300,7 +287,7 @@ class VAR_RoPE(nn.Module):
             cond_BD = self.class_emb(torch.cat((label_B, torch.full_like(label_B, fill_value=self.num_classes-1)), dim=0))
         sos = torch.cat((sos, cond_BD.unsqueeze(1)), dim=1)
 
-        lvl_pos = self.lvl_embed(self.lvl_1L) #+ self.pos_1LC
+        lvl_pos = self.lvl_embed(self.lvl_1L)
         next_token_map = sos.expand(2 * B, self.first_l, -1) + self.pos_start.expand(2 * B, self.first_l, -1) + lvl_pos[:, :self.first_l]
         
         cur_L = 0
@@ -420,7 +407,7 @@ class VAR_RoPE(nn.Module):
                 if lr_inp_scale is not None:
                     x_BLC[:, -self.L:, :] = x_BLC[:, -self.L:, :] + self.word_embed(lr_inp_scale.float())
             x_BLC = x_BLC[mask].reshape(B, -1, x_BLC.shape[-1])
-            x_BLC += self.lvl_embed(self.lvl_1L[:, :ed].expand(B, -1)) #+ self.pos_1LC[:, :ed]# lvl: BLC;  pos: 1LC
+            x_BLC += self.lvl_embed(self.lvl_1L[:, :ed].expand(B, -1))
     
         attn_bias = self.attn_bias_for_masking[:, :, :ed, :ed]
         cond_BD_or_gss = self.shared_ada_lin(cond_BD)
@@ -444,9 +431,6 @@ class VAR_RoPE(nn.Module):
         x_BLC = x_BLC_logits[:, self.context_token - 1 :, :]
         
         with torch.no_grad():
-            # important to clone the last stage logits
-            # Haotian: autoregressive LLM sometimes have this error:
-            # RuntimeError: probability tensor contains either `inf`, `nan` or element < 0
             try:
                 idx_BL_sampled = sample_with_top_k_top_p_(
                     x_BLC_logits[
@@ -826,9 +810,6 @@ class ImgVAR_RoPE(nn.Module):
         x_BLC = x_BLC_logits[:, self.context_token - 1 :, :]
         
         with torch.no_grad():
-            # important to clone the last stage logits
-            # Haotian: autoregressive LLM sometimes have this error:
-            # RuntimeError: probability tensor contains either `inf`, `nan` or element < 0
             try:
                 idx_BL_sampled = sample_with_top_k_top_p_(
                     x_BLC_logits[

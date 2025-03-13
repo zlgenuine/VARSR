@@ -79,9 +79,6 @@ class LocalImageDataset_LPM(data.Dataset):
             transforms.CenterCrop(image_size) if center_crop else transforms.RandomCrop(image_size),
             transforms.RandomHorizontalFlip() if random_flip else transforms.Lambda(lambda x: x),
         ])
-        ram_mean = [0.485, 0.456, 0.406]
-        ram_std = [0.229, 0.224, 0.225]
-        self.ram_normalize = transforms.Normalize(mean=ram_mean, std=ram_std)
 
         self.img_preproc = transforms.Compose([
             transforms.ToTensor(),
@@ -226,17 +223,8 @@ class LocalImageDataset_LPM(data.Dataset):
         GT_image_t, LR_image_t = self.degradation.degrade_process(np.asarray(image)/255., resize_bak=self.resize_bak)
         example["conditioning_pixel_values"] = LR_image_t.squeeze(0) * 2.0 - 1.0
         example["pixel_values"] = GT_image_t.squeeze(0) * 2.0 - 1.0
-
-        ram_values = F.interpolate(LR_image_t, size=(384, 384), mode='bicubic')
-        ram_values = ram_values.clamp(0.0, 1.0)
-        example["ram_values"] = self.ram_normalize(ram_values.squeeze(0))
-
         example["label_B"] = int(label_B)
         example['img_path'] = img_path
-        # if label_B == 0:
-        #     if torch.rand(1) < 0.02:
-        #         example["label_B"] = int(1)
-        #         example["pixel_values"] = example["conditioning_pixel_values"]
 
         return example
 

@@ -37,9 +37,6 @@ class TestDataset(data.Dataset):
         self.img_preproc = transforms.Compose([
             transforms.ToTensor(),
         ])
-        ram_mean = [0.485, 0.456, 0.406]
-        ram_std = [0.229, 0.224, 0.225]
-        self.ram_normalize = transforms.Normalize(mean=ram_mean, std=ram_std)
         self.img_paths = []
         self.img_paths.extend(sorted(glob.glob(f'{pngtxt_dir}/HR/*'))[:])
 
@@ -72,44 +69,7 @@ class TestDataset(data.Dataset):
         else:
             example["conditioning_pixel_values"] = self.img_preproc(LR_image_t).squeeze(0) * 2.0 - 1.0
 
-        ram_values = F.interpolate(self.img_preproc(LR_image_t).unsqueeze(0), size=(round(384*scale),round(384*scale)), mode='bicubic')
-        ram_values = ram_values.clamp(0.0, 1.0)
-        example["ram_values"] = self.ram_normalize(ram_values.squeeze(0))
-
-
-        txt_path = self.img_paths[index].replace("/HR/", "/highlevel_prompt_GT/").replace(".png", ".txt")
-        try:
-            fp = open(txt_path, "r")
-            high_caption = fp.readlines()[0].lstrip()
-            fp.close()
-        except:
-            try: 
-                txt_path = self.img_paths[index].replace("/HR/", "/highlevel_prompt/").replace(".png", ".txt")
-                fp.close()
-                fp = open(txt_path, "r")
-                high_caption = fp.readlines()[0].lstrip()
-                fp.close()
-            except:
-                high_caption = ""
-        if self.tokenizer is not None:
-            example["highlevel_prompt"] = self.tokenize_caption(high_caption).squeeze(0)
-
-
-        txt_path = self.img_paths[index].replace("/HR/", "/lowlevel_prompt_q/").replace(".png", ".txt")
-        try:
-            fp = open(txt_path, "r")
-            caption = fp.readlines()[0].lstrip()
-            fp.close()
-        except:
-            caption = ""
-        if self.tokenizer is not None:
-            example["lowlevel_prompt"] = self.tokenize_caption(caption).squeeze(0)
-        
-        
-        txt_path = self.img_paths[index].replace("/HR/", "/label/").replace(".png", ".txt")
-        fp = open(txt_path, "r")
-        label = fp.readlines()[0].lstrip()
-        example["label_B"] = 0#torch.tensor(int(label))
+        example["label_B"] = 0
         fp.close()
     
         return example
