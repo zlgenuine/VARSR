@@ -15,7 +15,6 @@ import wandb
 import torch.nn.functional as F
 from test_varsr import metrics, numpy_to_pil, pt_to_numpy
 from myutils.wavelet_color_fix import wavelet_color_fix, adain_color_fix
-from ESRGAN.RRDBNet_arch import RRDBNet
 
 Ten = torch.Tensor
 FTen = torch.Tensor

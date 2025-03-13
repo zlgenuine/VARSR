@@ -26,7 +26,6 @@ from torchvision import transforms
 import pyiqa
 from skimage import io
 from models import VAR_RoPE, VQVAE, build_var
-from ESRGAN.RRDBNet_arch import RRDBNet
 
 
 def rgb2ycbcr_pt(img, y_only=False):

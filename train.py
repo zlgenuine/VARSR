@@ -16,7 +16,6 @@ from utils.data_sampler import DistInfiniteBatchSampler, EvalDistributedSampler
 from utils.misc import auto_resume
 from transformers import CLIPTextModel, CLIPTokenizer, CLIPImageProcessor, CLIPVisionModel
 from utils.lr_control import lr_wd_annealing
-from ESRGAN.RRDBNet_arch import RRDBNet
 
 def from_pretrained_orig(var, state_dict):
     for k, v in var.state_dict().items():

@@ -17,7 +17,7 @@ from myutils.img_util import convert_image_to_fn
 import pickle
 from transformers import AutoProcessor
 import torch.nn.functional as F
-from test_var import pt_to_numpy, numpy_to_pil
+from test_varsr import pt_to_numpy, numpy_to_pil
 import pandas as pd
 import scipy.io
 def exists(x):
