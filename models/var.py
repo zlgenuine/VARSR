@@ -364,7 +364,7 @@ class VAR_RoPE(nn.Module):
             f_hat += h_BChw_diff
 
 
-        return f_hat#self.vae_proxy[0].fhat_to_img(f_hat).add_(1).mul_(0.5)   # de-normalize, from [-1, 1] to [0, 1]
+        return self.vae_proxy[0].fhat_to_img(f_hat).add_(1).mul_(0.5)   # de-normalize, from [-1, 1] to [0, 1]
 
     def forward(self, x_BLCv_wo_first_l: torch.Tensor, label_B, lr_inp, text_hidden,
         last_layer_gt: torch.Tensor = None,
