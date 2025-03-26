@@ -64,19 +64,6 @@ torchrun --nproc-per-node=8 train.py --depth=24 --batch_size=4 --ep=5 --fp16=1 -
 ```
 You can modify the parameters in `utils/arg_util.py` to adapt to your specific need, such as the `batch_size` and the `learning_rate`.
 
-
-## 🔥Class-to-Image Inference
-We also provide pretrained Class-to-Image model weights and inference code to contribute more to the academic community.
-
-#### Step 1: Download the pretrained models
-- Download the C2I VARSR pretrained on our large-scale dataset, which can be downloaded from <a href='https://huggingface.co/qyp2000/VARSR'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Huggingface-qyp2000/VARSR-yellow'></a>.
-
-#### Step 2: Run code
-```
-python test_C2I.py
-```
-Our dataset contains 3830 semantic categories, and you can adjust the `classes` to generate images corresponding to each category.
-
 ## Citations
 If our work is useful for your research, please consider citing and give us a star ⭐:
 ```
