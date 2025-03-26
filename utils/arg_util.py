@@ -25,7 +25,7 @@ import dist
 class Args(Tap):
     valid_data_path: str = 'testset/RealSR_CenterCrop'
     vae_model_path: str = 'checkpoints/VQVAE.pth'
-    var_pretrain_path: str = "checkpoints/VARSR_base.pth"
+    var_pretrain_path: str = "checkpoints/VARSR_C2I.pth"
     var_test_path: str = "checkpoints/VARSR.pth"
     wandb_flag: bool= 0
     exp_name: str = 'test'

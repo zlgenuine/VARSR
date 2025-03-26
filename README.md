@@ -35,20 +35,28 @@ pip install -r requirements.txt
 ## 🔥Inference
 #### Step 1: Download the pretrained models and test data
 - Download VARSR and VQVAE model from <a href='https://huggingface.co/qyp2000/VARSR'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Huggingface-qyp2000/VARSR-yellow'></a> and put it into ``checkpoints/``.
-- Prepare testing images in the `testset`.
+- Prepare testing LR images in the `testset`, e.g., `testset/{folder_path}/LR`.
 
 #### Step 2: Run code
+- To generate standard 512*512 images:
 ```
 python test_varsr.py
 ```
 You can modify the parameters to adapt to your specific need, such as the `cfg` which is set to 6.0 by default.
 
+- To generate high-resolution images:
+```
+python test_tile.py
+```
+You can modify the parameters to adapt to your specific need, such as the `cfg` which is set to 7.0 by default and the `super-resolution scale` which is set to 4.0 by default.
+
+
 ## 🔥 Train 
 
 #### Step1: Download the pretrained models and training data
 - Download VQVAE model from <a href='https://huggingface.co/qyp2000/VARSR'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Huggingface-qyp2000/VARSR-yellow'></a> and put it into ``checkpoints/``.
-- Download pretrained original VAR models from [VAR](https://github.com/FoundationVision/VAR) and put them into ``checkpoints/``. You can also use the C2I VARSR pretrained on our large-scale dataset, which can be downloaded from <a href='https://huggingface.co/qyp2000/VARSR'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Huggingface-qyp2000/VARSR-yellow'></a>
-- Prepare your own training images, whose path should be changed in the file `dataloader/localdataset_lpm.py`.
+- Download pretrained original VAR models from [VAR](https://github.com/FoundationVision/VAR) and put them into ``checkpoints/``. You can also use the C2I VARSR pretrained on our large-scale dataset, which can be downloaded from <a href='https://huggingface.co/qyp2000/VARSR'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Huggingface-qyp2000/VARSR-yellow'></a>.
+- Prepare your own training images into `trainset`, e.g., `trainset/{folder_path}`. And you can put your negative samples into `trainset_neg`, e.g., `trainset_neg/{folder_path}`. More changes to the dataset path can be done in the file `dataloader/localdataset_lpm.py`.
 
 #### Step2: Run code
 ```
@@ -56,6 +64,18 @@ torchrun --nproc-per-node=8 train.py --depth=24 --batch_size=4 --ep=5 --fp16=1 -
 ```
 You can modify the parameters in `utils/arg_util.py` to adapt to your specific need, such as the `batch_size` and the `learning_rate`.
 
+
+## 🔥Class-to-Image Inference
+We also provide pretrained Class-to-Image model weights and inference code to contribute more to the academic community.
+
+#### Step 1: Download the pretrained models
+- Download the C2I VARSR pretrained on our large-scale dataset, which can be downloaded from <a href='https://huggingface.co/qyp2000/VARSR'><img src='https://img.shields.io/badge/%F0%9F%A4%97%20Huggingface-qyp2000/VARSR-yellow'></a>.
+
+#### Step 2: Run code
+```
+python test_C2I.py
+```
+Our dataset contains 3830 semantic categories, and you can adjust the `classes` to generate images corresponding to each category.
 
 ## Citations
 If our work is useful for your research, please consider citing and give us a star ⭐:

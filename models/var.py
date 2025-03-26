@@ -318,8 +318,6 @@ class VAR_RoPE(nn.Module):
                 last_layer_cond = x
             
             t = cfg * ratio
-            if si==self.num_stages_minus_1:
-                idx_Bl_last = sample_with_top_k_top_p_(logits_BlV.clone(), rng=rng, top_k=top_k, top_p=top_p, num_samples=1)[:, :, 0]
             logits_BlV = (1+t) * logits_BlV[:B] - t * logits_BlV[B:]
 
             if si == 0:
@@ -364,7 +362,7 @@ class VAR_RoPE(nn.Module):
             f_hat += h_BChw_diff
 
 
-        return f_hat#self.vae_proxy[0].fhat_to_img(f_hat).add_(1).mul_(0.5)   # de-normalize, from [-1, 1] to [0, 1]
+        return self.vae_proxy[0].fhat_to_img(f_hat).add_(1).mul_(0.5)   # de-normalize, from [-1, 1] to [0, 1]
 
     def forward(self, x_BLCv_wo_first_l: torch.Tensor, label_B, lr_inp, text_hidden,
         last_layer_gt: torch.Tensor = None,
@@ -726,7 +724,7 @@ class ImgVAR_RoPE(nn.Module):
             if si == self.num_stages_minus_1:
                 last_layer_cond = x
             
-            t = cfg * (ratio**2)
+            t = cfg * ratio
             logits_BlV = (1+t) * logits_BlV[:B] - t * logits_BlV[B:]
 
             if si == 0:
