@@ -32,8 +32,6 @@ class TestDataset(data.Dataset):
         self.resize_bak = resize_bak
         self.null_text_ratio = null_text_ratio
         self.original_image_ratio = original_image_ratio
-        self.processor = AutoProcessor.from_pretrained("/home/quyunpeng/VAR/checkpoints/clip")
-
         self.img_preproc = transforms.Compose([
             transforms.ToTensor(),
         ])
