@@ -707,7 +707,7 @@ class ImgVAR_RoPE(nn.Module):
         for b in self.blocks: 
             b.attn.kv_caching(True)
         for si, pn in enumerate(self.patch_nums):   # si: i-th segment
-            ratio = si / self.num_stages_minus_1
+            ratio = (si+1) / self.num_stages_minus_1
             if si > 0:
                 freqs_cis = self.freqs_cis[cur_L:cur_L + pn*pn]
                 cur_L += pn * pn
