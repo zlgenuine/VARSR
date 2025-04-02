@@ -261,7 +261,7 @@ class VAR_RoPE(nn.Module):
     def autoregressive_infer_cfg(
         self, B: int, text_hidden, lr_inp, negative_text, label_B,
         g_seed: Optional[int] = None, cfg=1.5, top_k=0, top_p=0.0, 
-        more_smooth=False, lr_inp_scale=None,
+        more_smooth=False, lr_inp_scale=None, tile_flag=False,
     ) -> torch.Tensor:   # returns reconstructed image (B, 3, H, W) in [0, 1]
         """
         only used for inference, on autoregressive mode
@@ -361,8 +361,10 @@ class VAR_RoPE(nn.Module):
             )
             f_hat += h_BChw_diff
 
-
-        return self.vae_proxy[0].fhat_to_img(f_hat).add_(1).mul_(0.5)   # de-normalize, from [-1, 1] to [0, 1]
+        if tile_flag:
+            return f_hat
+        else:
+            return self.vae_proxy[0].fhat_to_img(f_hat).add_(1).mul_(0.5)   # de-normalize, from [-1, 1] to [0, 1]
 
     def forward(self, x_BLCv_wo_first_l: torch.Tensor, label_B, lr_inp, text_hidden,
         last_layer_gt: torch.Tensor = None,
