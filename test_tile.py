@@ -189,7 +189,7 @@ def main(args: arg_util.Args):
                     with torch.inference_mode():
                         with torch.autocast('cuda', enabled=True, dtype=torch.float16, cache_enabled=True):    # using bfloat16 can be faster
                             recon_B3HW = var.autoregressive_infer_cfg(B=grid_cols, cfg=7.0, top_k=1, top_p=0.75,
-                                                                text_hidden=None, lr_inp=lr4var, negative_text=None, label_B=label_B.repeat(grid_cols), lr_inp_scale = None,
+                                                                text_hidden=None, lr_inp=lr4var, negative_text=None, label_B=label_B.repeat(grid_cols), lr_inp_scale = None, tile_flag=True,
                                                                 more_smooth=False)
                             recon_pred.append(recon_B3HW)
 
